@@ -123,7 +123,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -166,6 +166,129 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/ISyE-6761-lec18/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="WUUUYT">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WUUUYT">
+      <meta itemprop="description" content="There is more to come">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | WUUUYT">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/11/26/ISyE-6761-lec18/" class="post-title-link" itemprop="url">ISyE 6761 Lec 18 CTMC Definition</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-11-26 16:37:13 / Modified: 18:31:16" itemprop="dateCreated datePublished" datetime="2024-11-26T16:37:13-05:00">2024-11-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Course-Notes/" itemprop="url" rel="index"><span itemprop="name">Course Notes</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Course-Notes/ISyE-6761/" itemprop="url" rel="index"><span itemprop="name">ISyE 6761</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="Jump-Matrix"><a href="#Jump-Matrix" class="headerlink" title="Jump Matrix"></a>Jump Matrix</h3><p>Def<br>: Given a transition-rate matrix $Q$ on an alomost countable set $I$, the jump matrix $R=(r_{ij}: i,j\in I)$ of $Q$ is defined as follows. For any $i\neq j, i\in X$,</p>
+<ol>
+<li>$r_{ij}=0, r_{ii}=1$ if $q_i=0$.</li>
+<li>$r_{ij}=\frac{q_{ij}}{q_i}, r_{ii}=0$ if $q_i\neq0$.<blockquote>
+<p>For each row with $q_i\neq0$, the diagonal is set to 0 and normalize the other entries. When $q_i=0$, the diagonal is set to 1.<br>There is no self-loops, unless it’s on absorbing state</p>
+</blockquote>
+</li>
+</ol>
+<p>Def<br>: A minimal right continuous process $(X_t)_{t\geq0}$ on state space X is a continuous time markov chain with initial distribution $\nu$ and generator matrix $Q$ if</p>
+<ol>
+<li>its jump chain $(Y_n)_{n\geq0}$ is DTMC($\nu$, $R$), where $R$ is the jump matrix of $Q$.</li>
+<li>for each $n\geq1$, conditional on $Y_0,\ldots Y_{n-1}$, its holding times $S_1,\ldots, S_n$ are independent exponential random variables of parameters $q(Y_0),\ldots,q(Y_{n−1})$, respectively.<blockquote>
+<p>Property 2 says that the next holding time is independent of previous holding times and jump times. The next state is sampled from the corresponding row of the jump matrix.</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="Construction-I-of-a-CTMC"><a href="#Construction-I-of-a-CTMC" class="headerlink" title="Construction I of a CTMC"></a>Construction I of a CTMC</h4><ol>
+<li>Let $(Y_n)_{n\leq0}$ be DTMC($\nu$,$R$)</li>
+<li>Let $T_1,T_2,\ldots$ be independent exponential R.V. of parameter 1, independent of $Y_n$.</li>
+<li>Set $S_n = \frac{T_n}{q(Y_{n−1})}$ to be the holding times, so that $S_n$ is a exponential R.V. with parameter $q(Y_{n-1})$.</li>
+<li>Let $J_n = S_1 + \ldots + S_n$ be the jump times.</li>
+<li>Let $X_t = \begin{cases}Y_n &amp; \text{if } J_n \leq t &lt; J_{n+1} \text{ for some } n, \ \infty &amp; \text{otherwise}. \end{cases}$ be the right continuous process, which has $S_n$ as holding times and $Y_n$ as the jump chain.</li>
+</ol>
+<h4 id="Construction-II-of-a-CTMC"><a href="#Construction-II-of-a-CTMC" class="headerlink" title="Construction II of a CTMC"></a>Construction II of a CTMC</h4><blockquote>
+<p>Use the transition rate matrix. Observations: Suppose $Y_n=i$, the holding time is $\exp(q_i)$, and the next state is sampled from the pmf ($r_{ij}:j\in X$).We can model this as follow:</p>
+<p>Let $(w_j: j\in X, j\neq i)$ be iid exponential R.V. with rates $q_{ij}$. Let $S_{n+1}=\inf_{j\neq i} w_j$ with $Y_{n+1}$ being the minimizer. Then, $S_{n+1}\sim \exp(q_i)$ and $Y_{n+1}$ has pmf $(r_{ij}: j\in X)$ and $S_{n+1} \&amp; Y_{n+1}$ are independent.</p>
+</blockquote>
+<ol>
+<li>Begin with an initial state $X_0=Y_0$ with distribution $\nu$.</li>
+<li>Let ($T^i_n:n\geq 1,j\in X$) be a collection of iid expo R.V. with parameter 1 . We will </li>
+<li><p>Then, inductively on $n=0,1,\ldots$, if $Y_n=i$ we set</p>
+<ul>
+<li>$S_{n+1}^j = \frac{T^i_{n+1}}{q_{ij}}, \text{for} j\neq i$,<br>  For each possible next state j.</li>
+<li>$S_{n+1} = \inf_{j\neq i} S_{n+1}^j$,<br>  Choose the shortest one.</li>
+<li>$Y_{n+1} = \begin{cases}j &amp; \text{if } S_{n+1}^j=S_{n+1}&lt;\infty, \ i &amp; \text{if} S_{n+1}=\infty\end{cases}$<br>  Determine the next state.</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>By this construction, $q_{ij}$ is called the rate of going from $i$ to $j$.</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -358,7 +481,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/11/22/ISyE-6761-lec17/" class="post-title-link" itemprop="url">ISyE 6761 Lec 17</a>
+          <a href="/2024/11/22/ISyE-6761-lec17/" class="post-title-link" itemprop="url">ISyE 6761 Lec 17 Continuous-time Markov Chain</a>
         </h2>
 
         <div class="post-meta-container">
@@ -376,7 +499,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-11-23 13:44:35" itemprop="dateModified" datetime="2024-11-23T13:44:35-05:00">2024-11-23</time>
+      <time title="Modified: 2024-11-26 16:34:05" itemprop="dateModified" datetime="2024-11-26T16:34:05-05:00">2024-11-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -402,15 +525,85 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Continuous-time-Markov-Chain"><a href="#Continuous-time-Markov-Chain" class="headerlink" title="Continuous-time Markov Chain"></a>Continuous-time Markov Chain</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/11/22/ISyE-6761-lec17/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="Q-matrices-and-their-exponentials"><a href="#Q-matrices-and-their-exponentials" class="headerlink" title="$Q$-matrices and their exponentials"></a>$Q$-matrices and their exponentials</h2><p>The time of CTMCs is within $[0,\infty]$, so we should interpolate between the dicrete times $0, 1, 2,\ldots$<br>A natural way to interpolate the discrete sequence is by funtion ($e^{tq}: t\geq 0$), since $p^t=(e^{\log p})^t=e^{tq}$, where $q=\log p$.</p>
+<p>For any matrix $Q$, the series $\displaystyle \sum_{k=0}^{\infty} \frac{Q^k}{k!}$ converges componentwise and we denote the limit by $e^Q$. </p>
+<blockquote>
+<p>If two Q-matrices commute ($Q_1Q_2=Q_2Q_1$), then $e^{Q_1 + Q_2} = e^{Q_1} e^{Q_2}$.</p>
+</blockquote>
+<p>Suppose we can find a matrix Q with $e^Q=P$, then $e^{nQ}=P^n$, which fills in the gap.</p>
+<h3 id="Theorem"><a href="#Theorem" class="headerlink" title="Theorem"></a>Theorem</h3><p>: Let $Q$ be a matrix on a finite set I. Set $P(t) = e^{tQ}$. Then $(P (t) : t \geq 0)$ has the following properties:</p>
+<ol>
+<li>$P (s + t) = P (s)P (t)$ for all s, t (semigroup property );</li>
+<li><p>$(P (t) : t \geq 0)$ is the unique solution to the forward equation<br>$\frac{d}{dt} P (t) = P (t)Q, P (0) = I$; </p>
+</li>
+<li><p>$(P (t) : t \geq 0)$ is the unique solution to the backward equation<br>$\frac{d}{dt} P (t) = QP (t), P (0) = I$;</p>
+</li>
+<li><p>for $k = 0,1,2,\ldots$, we have<br>$(\frac{d}{dt})^k|_{t=0} P(t) = Q^k$</p>
+</li>
+</ol>
+<blockquote>
+<p>The above result is for arbitrary matrix $Q$. Next define a stochastic matrix.</p>
+</blockquote>
+<h3 id="Q-matrix"><a href="#Q-matrix" class="headerlink" title="$Q$-matrix"></a>$Q$-matrix</h3><p>: Let $I$ be a countable set. A $Q$-$matrix$ $Q=(q_{ij}:i,j\in I)$ on $I$ is called a transition-rate matrix if it satisfies the following:</p>
+<ol>
+<li>$0\leq-q_{ii}\leq\infty, \forall i$</li>
+<li>$q_{ij}\geq 0, \forall i\neq j$</li>
+<li><p>$\displaystyle \sum_{j\in I}q_{ij}=0, \forall i$</p>
+<blockquote>
+<p>transition-rate matrix = $Q$-$matrix$ = intensity matrix = generator</p>
+</blockquote>
+<p>Define $q_i=\sum_{j\neq i} q_ij&lt;\infty$, then $q_{ii}=-q_i$</p>
+<p>Each off-diagonal entry $q_{ij}$ gives the value we attach to the $(i, j)$ arrow on the diagram, which we shall interpret later as the rate of going from i to j. We shall later interpret qi as the rate of leaving i.</p>
+</li>
+</ol>
+<h3 id="Theorem-1"><a href="#Theorem-1" class="headerlink" title="Theorem"></a>Theorem</h3><p>: A matrix $Q$ on a finite set $\mathbb{X}$ is a transition-rate matrix if and only if $P(t)=e^{tQ}$ is a stochastic matrix for all $t\geq 0$.</p>
+<blockquote>
+<p>If $P$ is a stochastic matrix of the form $e^Q$ for some $Q$-matrix, we can interpolate it between integers times. Fix a positive integer $m$, define a DTMC($\lambda$, $e^{Q/m}$) for $X_n^m$, and define $X_n^m = X_{n/m}$. Then $(X_n:n=0,1,\ldots)$ is a DTMC($\lambda$, $e^Q=P$). </p>
+<p>Thus, by picking $m$ large enough, we can define a continuous time process $(X_t)t\geq 0$ has this property.</p>
+</blockquote>
+<p>A continuous-time Markov chain $(Xt)_{t\geq0)}$ with $Q$-matrix satisfies</p>
+<ul>
+<li>$P(X_{t_{n+1}})=i_{n+1}|X_{t_0} =i_0,\ldots,X_{t_n}=i_n)=P_{i_ni_{n+1}}(t_{n+1} −t_n)$</li>
+</ul>
+<p>for all $n = 0,1,2,\ldots$, all times $0 \leq t_0 \leq \ldots \leq t_{n+1}$ and all states $i_0,\ldots ,i_{n+1}$, where $p_{ij}(t)$ is the $(i,j)$ entry in $e^{tQ}$. In particular, the transition probability from $i$ to $j$ in time $t$ is given by $P_i(X_t=j):=P(X_t=j|X_0=i)=p_{ij}(t)$.</p>
+<h2 id="Continuous-time-Random-Process-and-Explosion"><a href="#Continuous-time-Random-Process-and-Explosion" class="headerlink" title="Continuous-time Random Process and Explosion"></a>Continuous-time Random Process and Explosion</h2><p>For a right continuous stochastic process taking values in a countable set, every path must remain constant for a while in each new state. </p>
+<p>Below are the three possibilities for the types of path:</p>
+<ol>
+<li><p>Infinitely many jumps , but finite many in any interval $[0,t]$.</p>
+ <img src="/2024/11/22/ISyE-6761-lec17/type1.png" class="" title="type1">
+</li>
+<li><p>Finite many jumps and stuck in some state forever.</p>
+ <img src="/2024/11/22/ISyE-6761-lec17/type2.png" class="" title="type2">
+</li>
+<li><p>Infinitely many jumps in a finite interval.</p>
+ <img src="/2024/11/22/ISyE-6761-lec17/type3.png" class="" title="type3">
+<blockquote>
+<p>$\zeta$ is the explosion time and the process restarts again after explosion. It may explode again or it may not.</p>
+</blockquote>
+</li>
+</ol>
+<p>The $J_i$ are jump times, and $S_i$ are holding times. If $J_{n+1}=\infty$, we define $X_\infty=X_{J_n}$. </p>
+<h3 id="Explostion-time"><a href="#Explostion-time" class="headerlink" title="Explostion time"></a>Explostion time</h3><p>The (first) explostion time $\zeta$ is defined by $\zeta=\sup_n J_n=\sum_{n+1}^\infty S_n$.</p>
+<h3 id="Jump-Process"><a href="#Jump-Process" class="headerlink" title="Jump Process"></a>Jump Process</h3><p>The discrete-time process $(Y_n)n\geq0$ given by $Y_n=X_{j_n}$ is called the jump process of $(X_t)t\geq0$, or jump chain if it’s a DTMC.</p>
+<h3 id="Minimal-Process"><a href="#Minimal-Process" class="headerlink" title="Minimal Process"></a>Minimal Process</h3><p>We shall not consider what happens to a process after explosion. So we define a minimal process such that $X_t=\infty$ for $t\geq \zeta$. Here we adjoin a new state $\infty$ to $\mathbb{X}$.</p>
+<blockquote>
+<p>“minimal” refers to the interval of time when the process is active.</p>
+<p>A minimal process may be reconstructed from its holding times and jump process. Thus by specifying the joint distribution of $S_1, S_2, …$ and $(Y_n)n\geq0$, we can specify the probabilistic behaviour of $(X_t)t\geq0$ in terms of countable collection of R.V.</p>
+<p>For example, $P(X_t=i)=\sum_{n=0}^\infty P(Y_n=i and J_n\leq t\leq J_{n+1})$ and<br>$P(X_t=i \text{ for some } t \in [0,\infty))=P(Y_n=i \text{ for some } n\geq 0)$</p>
+</blockquote>
+<h3 id="Birth-Process"><a href="#Birth-Process" class="headerlink" title="Birth Process"></a>Birth Process</h3><p>A birth process is a generalization of a Poisson process in which the parameter $\lambda$ is allowed to depend on the current state of the process. </p>
+<p>A minimal right-continuous process $(X_t)_{t\geq 0}$ with values in ${0,1,2,\ldots}\cup{\infty}$ is a birth process of rates $0 \leq q_j &lt; \infty$ if conditional on $X_0 = i$, its holding times are independent exponential random variables of rate $q_j$ and jump chain is given by $Y_n=i+n$. Below is the flow diagram:</p>
+<img src="/2024/11/22/ISyE-6761-lec17/flow.png" class="" title="flow">
+<h3 id="Explode-or-not"><a href="#Explode-or-not" class="headerlink" title="Explode or not"></a>Explode or not</h3><p>Theorem<br>: Let $(X_t)_{t\geq 0}$ be a birth process of rates ($q_j:j\geq0$), starting from 0.</p>
+<ol>
+<li>If $\sum_{j=0}^\infty \frac{1}{q_j}&lt;\infty$, then $P(\zeta&lt;\infty)=1$. i.e. explodes in finite time with prob 1.</li>
+<li>If $\sum_{j=0}^\infty \frac{1}{q_j}=\infty$, then $P(\zeta=\infty)=1$.<br>i.e. does not explodes in finite time with prob 1.</li>
+</ol>
+<blockquote>
+<p>If $\lambda_i = i^2$, it explodes. If $\lambda_i=i$, it doesn’t.</p>
+</blockquote>
+<p>Note: chapter 2 of Norris.</p>
+
       
     </div>
 
@@ -496,9 +689,7 @@
     <div class="post-body" itemprop="articleBody">
           <p><a target="_blank" rel="noopener" href="https://hexo.io/docs/">Documentation</a></p>
 <h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;title&quot;</span></span><br></pre></td></tr></table></figure>
-<p>or with a different layout(post, page, draft)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<p>or with a different layout(post, page, draft)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure><br>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a><br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/11/22/Tips/#more" rel="contents">
@@ -575,6 +766,12 @@
   
 
 
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
 
 
 
