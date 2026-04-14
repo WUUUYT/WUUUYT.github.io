@@ -1,0 +1,83 @@
+---
+---
+
+<section id="about">
+  <div class="container">
+    <p class="section-title">About</p>
+    <div class="about-grid">
+      <div class="bio">
+        <p>
+          Welcome to my corner of the internet. Here, I share my ideas and learnings
+          on topics ranging from Optimization, Algorithms, and some of my little things.
+          Happy browsing and have a great day!
+        </p>
+      </div>
+      <div class="contact">
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <a href="mailto:wuuuyt72@gmail.com">wuuuyt72@gmail.com</a>
+        </div>
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <a href="https://instagram.com/wuuuuyt" target="_blank" rel="noopener">@wuuuuyt</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .bio p {
+    color: var(--text-dim);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    max-width: 52ch;
+  }
+
+  .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--muted);
+  }
+
+  .contact-item svg {
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .contact-item a {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    transition: color 0.15s;
+  }
+
+  .contact-item a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

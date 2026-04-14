@@ -1,0 +1,107 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Group by year
+const postsByYear = posts.reduce<Record<number, typeof posts>>((acc, post) => {
+  const year = post.data.date.getFullYear();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(post);
+  return acc;
+}, {});
+
+const years = Object.keys(postsByYear)
+  .map(Number)
+  .sort((a, b) => b - a);
+---
+
+<Layout title="Blog" description="Writing on optimization, algorithms, and more.">
+  <div class="container blog-page">
+    <header class="page-header">
+      <h1 class="page-title">Writing</h1>
+      <p class="page-sub">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
+    </header>
+
+    {posts.length > 0 ? (
+      years.map(year => (
+        <div class="year-group">
+          <div class="year-label">{year}</div>
+          <div class="post-list">
+            {postsByYear[year].map(post => (
+              <BlogCard
+                title={post.data.title}
+                date={post.data.date}
+                slug={post.slug}
+                description={post.data.description}
+                categories={post.data.categories}
+              />
+            ))}
+          </div>
+        </div>
+      ))
+    ) : (
+      <div class="empty-state">
+        <p>No posts yet.</p>
+        <p class="empty-sub">Check back soon.</p>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .blog-page {
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .page-title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .page-sub {
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+  }
+
+  .year-group {
+    margin-bottom: 3rem;
+  }
+
+  .year-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 6rem 0;
+    color: var(--text-dim);
+  }
+
+  .empty-sub {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+</style>

@@ -1,0 +1,121 @@
+---
+interface Props {
+  title: string;
+  date: Date;
+  slug: string;
+  description?: string;
+  categories?: string[];
+}
+
+const { title, date, slug, description, categories = [] } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<a href={`/blog/${slug}`} class="blog-card">
+  <div class="card-left">
+    <time class="card-date" datetime={date.toISOString()}>{formattedDate}</time>
+    {categories.length > 0 && (
+      <span class="card-cat">{categories[0]}</span>
+    )}
+  </div>
+  <div class="card-right">
+    <span class="card-title">{title}</span>
+    {description && <span class="card-desc">{description}</span>}
+  </div>
+  <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+</a>
+
+<style>
+  .blog-card {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.125rem 0;
+    border-bottom: 1px solid var(--border);
+    color: inherit;
+    transition: none;
+    text-decoration: none;
+  }
+
+  .blog-card:first-child {
+    border-top: 1px solid var(--border);
+  }
+
+  .blog-card:hover .card-title {
+    color: var(--accent);
+  }
+
+  .blog-card:hover .card-arrow {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  .card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .card-date {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+  .card-cat {
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+
+  .card-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .card-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: color 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-desc {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-arrow {
+    color: var(--border);
+    flex-shrink: 0;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+
+  @media (max-width: 600px) {
+    .blog-card {
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+    }
+
+    .card-left {
+      display: none;
+    }
+  }
+</style>

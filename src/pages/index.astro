@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Projects from '../components/Projects.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+---
+
+<Layout title="Home" description="Welcome to my corner of the internet. Optimization, Algorithms, and some of my little things.">
+  <Hero />
+  <About />
+  <Projects />
+
+  <section id="writing">
+    <div class="container">
+      <div class="writing-header">
+        <p class="section-title">Writing</p>
+        {allPosts.length > 5 && (
+          <a href="/blog" class="view-all">View all →</a>
+        )}
+      </div>
+
+      {recentPosts.length > 0 ? (
+        <div class="post-list">
+          {recentPosts.map(post => (
+            <BlogCard
+              title={post.data.title}
+              date={post.data.date}
+              slug={post.slug}
+              description={post.data.description}
+              categories={post.data.categories}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">No posts yet — check back soon.</p>
+      )}
+
+      {allPosts.length > 0 && (
+        <div class="all-link">
+          <a href="/blog">Browse all posts →</a>
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .writing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+
+  .view-all {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+
+  .view-all:hover {
+    color: var(--accent);
+  }
+
+  .post-list {
+    margin-top: 0;
+  }
+
+  .empty {
+    color: var(--muted);
+    font-size: 0.9375rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .all-link {
+    margin-top: 1.5rem;
+  }
+
+  .all-link a {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    transition: color 0.15s;
+  }
+
+  .all-link a:hover {
+    color: var(--accent);
+  }
+</style>
