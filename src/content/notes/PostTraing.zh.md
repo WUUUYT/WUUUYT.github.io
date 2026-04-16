@@ -3,7 +3,7 @@ title: "Post Training - RLHF 与大语言模型对齐"
 date: 2026-04-16
 description: "从监督微调（SFT）到基于人类反馈的强化学习（RLHF）的完整对齐流程，涵盖数据构建、训练方法、核心算法及常见风险。"
 categories: ["机器学习", "大语言模型", "笔记"]
-lang: en
+lang: zh
 ---
 
 ## 一、背景与问题动机
