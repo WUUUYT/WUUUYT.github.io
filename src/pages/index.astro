@@ -4,18 +4,80 @@ import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Projects from '../components/Projects.astro';
 import BlogCard from '../components/BlogCard.astro';
+import NoteCard from '../components/NoteCard.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const recentPosts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 5);
+
+// Notes: group by base slug, deduplicate
+const allNotes = await getCollection('notes', ({ data }) => !data.draft);
+const notesBySlug = new Map<string, typeof allNotes>();
+for (const note of allNotes) {
+  const baseSlug = note.slug.replace(/\.(en|zh)$/, '');
+  if (!notesBySlug.has(baseSlug)) {
+    notesBySlug.set(baseSlug, []);
+  }
+  notesBySlug.get(baseSlug)!.push(note);
+}
+const recentNotes = Array.from(notesBySlug.entries())
+  .map(([slug, versions]) => {
+    const primary = versions.find(v => v.data.lang === 'en') || versions[0];
+    const langs = versions.map(v => v.data.lang).sort();
+    return {
+      slug,
+      title: primary.data.title,
+      date: primary.data.date,
+      description: primary.data.description,
+      categories: primary.data.categories,
+      langs,
+    };
+  })
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 5);
+const totalNotes = notesBySlug.size;
 ---
 
 <Layout title="Home" description="Welcome to my corner of the internet. Optimization, Algorithms, and some of my little things.">
   <Hero />
   <About />
   <Projects />
+
+  <section id="notes">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-title">Notes</p>
+        {totalNotes > 5 && (
+          <a href="/notes" class="view-all">View all &rarr;</a>
+        )}
+      </div>
+
+      {recentNotes.length > 0 ? (
+        <div class="note-list">
+          {recentNotes.map(note => (
+            <NoteCard
+              title={note.title}
+              date={note.date}
+              slug={note.slug}
+              description={note.description}
+              categories={note.categories}
+              langs={note.langs}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">No notes yet — check back soon.</p>
+      )}
+
+      {totalNotes > 0 && (
+        <div class="all-link">
+          <a href="/notes">Browse all notes &rarr;</a>
+        </div>
+      )}
+    </div>
+  </section>
 
   <section id="writing">
     <div class="container">
@@ -52,6 +114,13 @@ const recentPosts = allPosts
 </Layout>
 
 <style>
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+
   .writing-header {
     display: flex;
     align-items: center;

@@ -1,0 +1,291 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/global.css';
+import 'katex/dist/katex.min.css';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allNotes = await getCollection('notes', ({ data }) => !data.draft);
+
+  const notesBySlug = new Map<string, typeof allNotes>();
+  for (const note of allNotes) {
+    const baseSlug = note.slug.replace(/\.(en|zh)$/, '');
+    if (!notesBySlug.has(baseSlug)) {
+      notesBySlug.set(baseSlug, []);
+    }
+    notesBySlug.get(baseSlug)!.push(note);
+  }
+
+  return Array.from(notesBySlug.entries()).map(([slug, notes]) => ({
+    params: { slug },
+    props: { notes },
+  }));
+}
+
+const { notes } = Astro.props;
+
+// Render all language versions
+const versions = await Promise.all(
+  notes.map(async (note: any) => {
+    const { Content } = await note.render();
+    return {
+      lang: note.data.lang as string,
+      title: note.data.title as string,
+      date: note.data.date as Date,
+      description: note.data.description as string | undefined,
+      categories: (note.data.categories || []) as string[],
+      Content,
+    };
+  })
+);
+
+// Sort so 'en' comes first
+versions.sort((a, b) => a.lang.localeCompare(b.lang));
+
+const langs = versions.map(v => v.lang);
+const hasMultipleLangs = langs.length > 1;
+const defaultLang = langs[0];
+const primaryVersion = versions[0];
+---
+
+<Layout title={primaryVersion.title}>
+  <article class="container note">
+    {hasMultipleLangs && (
+      <div class="lang-switch">
+        {versions.map(v => (
+          <button
+            class={`lang-btn ${v.lang === defaultLang ? 'active' : ''}`}
+            data-lang={v.lang}
+          >
+            {v.lang === 'zh' ? '中文' : 'EN'}
+          </button>
+        ))}
+      </div>
+    )}
+
+    {versions.map(v => {
+      const formattedDate = v.date.toLocaleDateString(
+        v.lang === 'zh' ? 'zh-CN' : 'en-US',
+        { year: 'numeric', month: 'long', day: 'numeric' }
+      );
+      return (
+        <div
+          class={`lang-content ${v.lang !== defaultLang ? 'hidden' : ''}`}
+          data-lang={v.lang}
+        >
+          <header class="note-header">
+            <div class="note-meta">
+              <time datetime={v.date.toISOString()}>{formattedDate}</time>
+              {v.categories.length > 0 && (
+                <span class="divider">&middot;</span>
+                <span class="categories">{v.categories.join(' / ')}</span>
+              )}
+            </div>
+            <h1 class="note-title">{v.title}</h1>
+            {v.description && <p class="note-desc">{v.description}</p>}
+          </header>
+          <div class="note-body">
+            <v.Content />
+          </div>
+        </div>
+      );
+    })}
+
+    <div class="note-back">
+      <a href="/notes">&larr; All notes</a>
+    </div>
+  </article>
+</Layout>
+
+<script>
+  const buttons = document.querySelectorAll('.lang-btn');
+  const contents = document.querySelectorAll('.lang-content');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.getAttribute('data-lang');
+
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      contents.forEach(c => {
+        if (c.getAttribute('data-lang') === lang) {
+          c.classList.remove('hidden');
+        } else {
+          c.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .note {
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+    position: relative;
+  }
+
+  /* Language toggle */
+  .lang-switch {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .lang-btn {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .lang-btn:first-child {
+    border-radius: var(--radius) 0 0 var(--radius);
+    border-right: none;
+  }
+
+  .lang-btn:last-child {
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .lang-btn.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .lang-btn:hover:not(.active) {
+    color: var(--text-dim);
+    border-color: var(--text-dim);
+  }
+
+  /* Hidden state */
+  .lang-content.hidden {
+    display: none;
+  }
+
+  /* Note header */
+  .note-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .note-meta {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .divider {
+    color: var(--border);
+  }
+
+  .note-title {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .note-desc {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Note body typography — matches blog post */
+  .note-body {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .note-body :global(h2) {
+    font-size: 1.35rem;
+    color: var(--text);
+    margin: 2.5rem 0 1rem;
+  }
+
+  .note-body :global(h3) {
+    font-size: 1.1rem;
+    color: var(--text);
+    margin: 2rem 0 0.75rem;
+  }
+
+  .note-body :global(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .note-body :global(ul),
+  .note-body :global(ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .note-body :global(li) {
+    margin-bottom: 0.4rem;
+  }
+
+  .note-body :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .note-body :global(img) {
+    border-radius: var(--radius-lg);
+    margin: 1.5rem auto;
+    max-width: 100%;
+  }
+
+  .note-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1.5rem 0;
+  }
+
+  .note-body :global(th),
+  .note-body :global(td) {
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.875rem;
+    text-align: left;
+  }
+
+  .note-body :global(th) {
+    background: var(--surface-2);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .note-back {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .note-back a {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    transition: color 0.15s;
+  }
+
+  .note-back a:hover {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import { getCollection } from 'astro:content';
+
+const allNotes = await getCollection('notes', ({ data }) => !data.draft);
+
+// Group by base slug (strip .en / .zh suffix)
+const notesBySlug = new Map<string, typeof allNotes>();
+for (const note of allNotes) {
+  const baseSlug = note.slug.replace(/\.(en|zh)$/, '');
+  if (!notesBySlug.has(baseSlug)) {
+    notesBySlug.set(baseSlug, []);
+  }
+  notesBySlug.get(baseSlug)!.push(note);
+}
+
+// Build deduplicated list: one entry per base slug
+const notes = Array.from(notesBySlug.entries()).map(([slug, versions]) => {
+  // Prefer English version for display, fall back to whatever exists
+  const primary = versions.find(v => v.data.lang === 'en') || versions[0];
+  const langs = versions.map(v => v.data.lang).sort();
+  return {
+    slug,
+    title: primary.data.title,
+    date: primary.data.date,
+    description: primary.data.description,
+    categories: primary.data.categories,
+    langs,
+  };
+});
+
+// Sort by date descending
+notes.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+// Group by year
+const notesByYear = notes.reduce<Record<number, typeof notes>>((acc, note) => {
+  const year = note.date.getFullYear();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(note);
+  return acc;
+}, {});
+
+const years = Object.keys(notesByYear)
+  .map(Number)
+  .sort((a, b) => b - a);
+---
+
+<Layout title="Notes" description="Notes and readings in English and Chinese.">
+  <div class="container notes-page">
+    <header class="page-header">
+      <h1 class="page-title">Notes</h1>
+      <p class="page-sub">{notes.length} note{notes.length !== 1 ? 's' : ''}</p>
+    </header>
+
+    {notes.length > 0 ? (
+      years.map(year => (
+        <div class="year-group">
+          <div class="year-label">{year}</div>
+          <div class="note-list">
+            {notesByYear[year].map(note => (
+              <NoteCard
+                title={note.title}
+                date={note.date}
+                slug={note.slug}
+                description={note.description}
+                categories={note.categories}
+                langs={note.langs}
+              />
+            ))}
+          </div>
+        </div>
+      ))
+    ) : (
+      <div class="empty-state">
+        <p>No notes yet.</p>
+        <p class="empty-sub">Check back soon.</p>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .notes-page {
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .page-title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .page-sub {
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+  }
+
+  .year-group {
+    margin-bottom: 3rem;
+  }
+
+  .year-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 6rem 0;
+    color: var(--text-dim);
+  }
+
+  .empty-sub {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+</style>
