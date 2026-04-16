@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx astro:*)"
+      "Bash(npx astro:*)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
